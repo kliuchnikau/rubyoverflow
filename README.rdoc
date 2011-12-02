@@ -1,6 +1,6 @@
 = rubyoverflow
 
-{<img src="https://secure.travis-ci.org/phsr/rubyoverflow.png" />}[http://travis-ci.org/phsr/rubyoverflow]
+{<img src="https://secure.travis-ci.org/danseaver/rubyoverflow.png" />}[http://travis-ci.org/danseaver/rubyoverflow]
 
 rubyoverflow is a library for querying the Stack Overflow API
 
