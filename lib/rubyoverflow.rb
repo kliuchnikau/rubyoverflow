@@ -6,6 +6,7 @@ require 'ostruct'
 
 require 'hashie'
 require 'json'
+require 'rubyoverflow/base'
 require 'rubyoverflow/sites'
 require 'rubyoverflow/users'
 require "rubyoverflow/version"
@@ -16,6 +17,14 @@ module Rubyoverflow
     format :plain
     HOST = 'http://api.stackoverflow.com'
     VERSION = '1.1'
+
+    Rubyoverflow.constants.select {|c| Class === Rubyoverflow.const_get(c) and Rubyoverflow.const_get(c) < Rubyoverflow::Base}.each do |class_sym|
+      send :attr_reader, class_sym.downcase
+      send "define_method", class_sym.downcase do
+        instance_variable_set("@#{class_sym.downcase}", Rubyoverflow.const_get(class_sym).new(self)) unless instance_variable_get("@#{class_sym.downcase}")
+        instance_variable_get "@#{class_sym.downcase}"
+      end
+    end
 
     attr_accessor :host
     attr_accessor :api_key
@@ -30,13 +39,18 @@ module Rubyoverflow
 
     def request(path, parameters = {})
       parameters['key'] = @api_key unless @api_key.nil? || @api_key.empty?
-      url = host_path + normalize(path) + query_string(parameters)
-      response = self.class.get url
+      url = "#{host_path}#{normalize(path)}"
+      response = self.class.get url, :query => parameters, :headers => {"Accept-Encoding" => "gzip"}
+
+      charset = retrieve_charset(response)
+
+      p charset
+
       return JSON.parse(response.body), url
     end
 
     def host_path
-      normalize(@host) +  normalize(@version)
+      "#{normalize(@host)}#{normalize(@version)}"
     end
 
     class << self
@@ -49,19 +63,19 @@ module Rubyoverflow
     end
 
     private
+
     def normalize(path)
       path.end_with?('/') ? path : path+ '/'
     end
 
-    def query_string(parameters)
-      if !parameters.empty?
-        params = parameters.sort_by { |k, v| k.to_s }
-        pairs  = params.map { |key, value| "#{key}=#{value}" }
+    def retrieve_charset(response)
+      charset = response.headers["content-type"].split(";").select{ |c| c =~ /charset/ }.first
 
-        '?' + pairs.join('&')
+      if charset and !charset.strip.empty?
+        charset.split("=").last
       else
-        ''
+        nil
       end
-   end
+    end
   end
 end

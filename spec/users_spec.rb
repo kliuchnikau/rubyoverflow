@@ -5,13 +5,13 @@ describe Users do
     @client = Client.new
   end
 
-  it "retrieves sites" do
+  it "retrieves users" do
     result = @client.users.fetch
     result.should respond_to(:users)
     result.page.should == 1
   end
 
-  it "retrieves phsr" do
+  it "retrieves Dan Seaver" do
     result = @client.users.fetch(:id => 53587)
     result.users.first.display_name.should == 'Dan Seaver'
   end
