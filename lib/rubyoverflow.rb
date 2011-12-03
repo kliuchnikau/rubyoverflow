@@ -3,6 +3,7 @@ $LOAD_PATH.unshift(path) unless $LOAD_PATH.include?(path)
 
 require 'faraday'
 require 'ostruct'
+require 'zlib'
 
 require 'hashie'
 require 'json'
@@ -42,10 +43,17 @@ module Rubyoverflow
         builder.adapter  :net_http
       end
       parameters[:key] = @api_key unless @api_key.nil? || @api_key.empty?
+      parameters['Accept-Encoding'] = 'gzip'
       response = conn.get do |req|
         req.url normalize(path), parameters
       end
-      return JSON.parse(response.body), response.env[:url]
+      rep_string = response.body
+      begin
+        gz = Zlib::GzipReader.new(StringIO.new(response.body.to_s))
+        rep_string = gz.read
+      rescue Zlib::GzipFile::Error
+      end
+      return JSON.parse(rep_string), response.env[:url]
     end
 
     def host_path
