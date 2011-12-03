@@ -8,7 +8,6 @@ module Rubyoverflow
       ids = params.delete(:id) if params[:id]
       ids = ids.join(';') if ids and ids.kind_of? Array
       hash,url = @client.request "#{@path}#{"/#{ids}" if ids}", params
-
       Hashie::Mash.new hash
     end
 
@@ -17,6 +16,7 @@ module Rubyoverflow
       ids = params.delete(:id) if params[:id]
       ids = ids.join(';') if ids and ids.kind_of? Array
       hash,url = @client.request "#{@path}#{"/#{ids}" if ids}/#{name}", params
+      Hashie::Mash.new hash
     end
 
     protected

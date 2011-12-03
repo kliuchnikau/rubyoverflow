@@ -1,7 +1,7 @@
 path = File.expand_path(File.dirname(__FILE__))
 $LOAD_PATH.unshift(path) unless $LOAD_PATH.include?(path)
 
-require 'httparty'
+require 'faraday'
 require 'ostruct'
 
 require 'hashie'
@@ -13,8 +13,6 @@ require "rubyoverflow/version"
 
 module Rubyoverflow
   class Client
-    include HTTParty
-    format :plain
     HOST = 'http://api.stackoverflow.com'
     VERSION = '1.1'
 
@@ -38,15 +36,16 @@ module Rubyoverflow
     end
 
     def request(path, parameters = {})
-      parameters['key'] = @api_key unless @api_key.nil? || @api_key.empty?
-      url = "#{host_path}#{normalize(path)}"
-      response = self.class.get url, :query => parameters, :headers => {"Accept-Encoding" => "gzip"}
-
-      charset = retrieve_charset(response)
-
-      p charset
-
-      return JSON.parse(response.body), url
+      conn = Faraday.new(:url => host_path) do |builder|
+        builder.request  :url_encoded
+        builder.request  :json
+        builder.adapter  :net_http
+      end
+      parameters[:key] = @api_key unless @api_key.nil? || @api_key.empty?
+      response = conn.get do |req|
+        req.url normalize(path), parameters
+      end
+      return JSON.parse(response.body), response.env[:url]
     end
 
     def host_path
@@ -65,17 +64,7 @@ module Rubyoverflow
     private
 
     def normalize(path)
-      path.end_with?('/') ? path : path+ '/'
-    end
-
-    def retrieve_charset(response)
-      charset = response.headers["content-type"].split(";").select{ |c| c =~ /charset/ }.first
-
-      if charset and !charset.strip.empty?
-        charset.split("=").last
-      else
-        nil
-      end
+      path.end_with?('/') ? path : path + '/'
     end
   end
 end

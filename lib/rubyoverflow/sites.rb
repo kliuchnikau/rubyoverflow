@@ -3,9 +3,7 @@ module Rubyoverflow
     @client = nil
     def fetch(params = {})
       @client ||= Client.stackauth_client
-
       hash,url = @client.request 'sites', params
-
       Hashie::Mash.new hash
     end
   end
