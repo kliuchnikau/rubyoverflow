@@ -1,8 +1,13 @@
 = rubyoverflow
 
+rubyoverflow is a library for querying the Stack Overflow API
+
+== Build Status
 {<img src="https://secure.travis-ci.org/danseaver/rubyoverflow.png" />}[http://travis-ci.org/danseaver/rubyoverflow]
 
-rubyoverflow is a library for querying the Stack Overflow API
+== Dependency Status
+{<img src="https://gemnasium.com/danseaver/rubyoverflow.png" alt="Dependency Status Gemnasium" />}[https://gemnasium.com/danseaver/rubyoverflow]
+
 
 == Example
 
