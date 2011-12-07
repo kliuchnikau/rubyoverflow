@@ -11,6 +11,7 @@ require 'rubyoverflow/base'
 require 'rubyoverflow/sites'
 require 'rubyoverflow/stats'
 require 'rubyoverflow/users'
+require 'rubyoverflow/answers'
 require "rubyoverflow/version"
 
 module Rubyoverflow
