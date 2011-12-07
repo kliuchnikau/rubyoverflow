@@ -9,6 +9,7 @@ require 'hashie'
 require 'json'
 require 'rubyoverflow/base'
 require 'rubyoverflow/sites'
+require 'rubyoverflow/stats'
 require 'rubyoverflow/users'
 require "rubyoverflow/version"
 
