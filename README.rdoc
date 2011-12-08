@@ -19,7 +19,7 @@ rubyoverflow is a library for querying the Stack Overflow API
     puts me.display_name                 # => "Dan Seaver"
 
 
-    c = Rubyoverflow::Client.new :host => "api.serverfault.com" # Query ServerFault.com
+    c = Rubyoverflow::Client.new :host => "http://api.serverfault.com" # Query ServerFault.com
 
 == Note on Patches/Pull Requests
 
