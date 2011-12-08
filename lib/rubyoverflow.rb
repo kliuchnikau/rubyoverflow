@@ -63,9 +63,9 @@ module Rubyoverflow
 
     class << self
       def stackauth_client(api_key = '')
-        options = OpenStruct.new
-        options.host = 'http://stackauth.com/'
-        options.api_key = api_key if api_key
+        options = {}
+        options[:host] = 'http://stackauth.com/'
+        options[:api_key] = api_key if api_key
         Client.new options
       end
     end
