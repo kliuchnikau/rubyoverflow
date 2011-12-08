@@ -31,12 +31,10 @@ module Rubyoverflow
     attr_accessor :host
     attr_accessor :api_key
 
-    def initialize(options = OpenStruct.new)
-      if options.kind_of? OpenStruct
-        @host = options.host || HOST
-        @version = options.version || VERSION
-        @api_key = options.api_key if options.api_key
-      end
+    def initialize(options = {})
+        @host = options[:host] || HOST
+        @version = options[:version] || VERSION
+        @api_key = options[:api_key] if options[:api_key]
     end
 
     def request(path, parameters = {})
