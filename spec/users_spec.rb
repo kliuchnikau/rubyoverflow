@@ -70,7 +70,28 @@ describe Users do
 		end
 
 		describe '#each_{method_missing}' do
+			def fake_page total, page = 1, pagesize = 30
+				{'total' => total, 'page' => page, 'pagesize' => pagesize }
+			end
 
+			let(:users_client) do
+				client = mock("Rubyoverflow::Client")
+				client.should_receive(:request).with('users/53587/questions', {}).and_return(fake_page(54))
+				client.should_receive(:request).with('users/53587/questions', {:page => 2}).and_return(fake_page(54, 2))
+				client
+
+				Rubyoverflow::Users.new(client)
+			end
+
+			it 'should iterate for each page' do
+				paqes = []
+				users_client.each_questions(:id => [53587]) {|page| paqes << page}
+
+				paqes.should have(2).items
+
+				paqes[0].page.should == 1
+				paqes[1].page.should == 2
+			end
 		end
 	end
 end
