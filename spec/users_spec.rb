@@ -25,33 +25,48 @@ describe Users do
 		# methods are named according to Enumerable#each_* naming convention
 		describe '#each_fetch' do
 			it 'yields block for each page' do
-				results = []
+				paqes = []
 				@client.users.each_fetch(:id => [53587, 22656, 23354], :pagesize => 2) { |page_result|
-					results << page_result
+					paqes << page_result
 				}
 
-				results.should have(2).items
+				paqes.should have(2).items
 
-				results[0].page.should == 1
-				results[1].page.should == 2
+				paqes[0].page.should == 1
+				paqes[1].page.should == 2
 			end
 
 			it 'should start iterating from :page parameter (when specified)' do
-				results = []
+				pages = []
 				@client.users.each_fetch(:id => [53587, 22656, 23354], :pagesize => 2, :page => 2) { |page_result|
-					results << page_result
+					pages << page_result
 				}
 
-				results.should have(1).item
+				pages.should have(1).item
 
-				results[0].page.should == 2
+				pages[0].page.should == 2
 			end
 
 			it 'should ignore requests with :pagesize = 0' do
 				expect { @client.users.each_fetch(:pagesize => 0) {} }.should_not raise_error
 			end
 
-			it 'should return Enumerator if no block given'
+			it 'should return self if block given' do
+				@client.users.each_fetch(:id => 53587) {}.should equal @client.users
+			end
+
+			it 'should return Enumerator if no block given' do
+				enum = @client.users.each_fetch(:id => 53587)
+
+				enum.should be_an_instance_of Enumerator
+
+				pages = []
+				enum.each { |page| pages << page }
+
+				pages.should have(1).page
+				pages[0].should have(1).users
+				pages[0].users[0].user_id.should == 53587
+			end
 		end
 
 		describe '#each_{method_missing}' do

@@ -9,6 +9,8 @@ module Rubyoverflow
     end
 
 		def each_fetch(params = {})
+			return enum_for(:each_fetch, params) unless block_given?
+
 			first_page_res = fetch(params)
 			yield first_page_res
 
@@ -17,6 +19,8 @@ module Rubyoverflow
 			last_page = (total / pagesize) + ( total % pagesize != 0 ? 1 : 0)
 
 			(first_page+1..last_page).each { |p| yield fetch params.merge(:page => p) }
+
+			self
 		end
 
     def method_missing(name, *args, &block)
