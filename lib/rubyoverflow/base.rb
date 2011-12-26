@@ -8,6 +8,16 @@ module Rubyoverflow
 			get_response params
     end
 
+		def each_fetch(params = {})
+			first_page_res = fetch(params)
+			yield first_page_res
+
+			total, first_page, pagesize = first_page_res.total, first_page_res.page, first_page_res.pagesize
+			last_page = (total / pagesize) + ( total % pagesize != 0 ? 1 : 0)
+
+			(first_page+1..last_page).each { |p| yield fetch params.merge(:page => p) }
+		end
+
     def method_missing(name, *args, &block)
       params = args.first
 			get_response params, name
