@@ -22,7 +22,7 @@ describe Users do
 	end
 
 	context 'when request several pages' do
-		# methods named according to Enumerable#each_* naming convention
+		# methods are named according to Enumerable#each_* naming convention
 		describe '#each_fetch' do
 			it 'yields block for each page' do
 				results = []
@@ -36,9 +36,22 @@ describe Users do
 				results[1].page.should == 2
 			end
 
-			it 'should start iterating from :page parameter (when specified)'
+			it 'should start iterating from :page parameter (when specified)' do
+				results = []
+				@client.users.each_fetch(:id => [53587, 22656, 23354], :pagesize => 2, :page => 2) { |page_result|
+					results << page_result
+				}
 
-			it 'should ignore requests with :pagesize = 0'
+				results.should have(1).item
+
+				results[0].page.should == 2
+			end
+
+			it 'should ignore requests with :pagesize = 0' do
+				expect { @client.users.each_fetch(:pagesize => 0) {} }.should_not raise_error
+			end
+
+			it 'should return Enumerator if no block given'
 		end
 
 		describe '#each_{method_missing}' do

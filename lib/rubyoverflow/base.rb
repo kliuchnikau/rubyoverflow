@@ -13,6 +13,7 @@ module Rubyoverflow
 			yield first_page_res
 
 			total, first_page, pagesize = first_page_res.total, first_page_res.page, first_page_res.pagesize
+			return if pagesize == 0
 			last_page = (total / pagesize) + ( total % pagesize != 0 ? 1 : 0)
 
 			(first_page+1..last_page).each { |p| yield fetch params.merge(:page => p) }
