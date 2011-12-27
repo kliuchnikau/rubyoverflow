@@ -18,6 +18,10 @@ rubyoverflow is a library for querying the Stack Overflow API
     me = result.users.first              # Get the first user out of the results
     puts me.display_name                 # => "Dan Seaver"
 
+    c = Rubyoverflow::Client.new
+    c.users.each_fetch(:min => 100000) do | result_page |       # Query for all users with reputation higher than 1000
+      result_page.users.each { |user| puts user.up_vote_count } # Print up votes count for these users
+    end
 
     c = Rubyoverflow::Client.new :host => "http://api.serverfault.com" # Query ServerFault.com
 
