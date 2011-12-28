@@ -3,7 +3,7 @@
 rubyoverflow is a library for querying the Stack Overflow API
 
 == Build Status
-{<img src="https://secure.travis-ci.org/danseaver/rubyoverflow.png" />}[http://travis-ci.org/danseaver/rubyoverflow]
+{<img src="https://secure.travis-ci.org/kliuchnikau/rubyoverflow.png" />}[http://travis-ci.org/kliuchnikau/rubyoverflow]
 
 == Dependency Status
 {<img src="https://gemnasium.com/danseaver/rubyoverflow.png" alt="Dependency Status Gemnasium" />}[https://gemnasium.com/danseaver/rubyoverflow]
